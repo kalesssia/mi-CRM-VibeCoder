@@ -24,8 +24,8 @@
       --text: #0f1115;
       --muted: #5b6270;
       --line: #e6e8ec;
-      --accent: #3b5bfd;
-      --accent-soft: #eef1ff;
+      --accent: #16a34a;
+      --accent-soft: #e8f7ee;
       --radius: 16px;
       --card: #ffffff;
       --header-bg: rgba(255,255,255,.85);
@@ -40,8 +40,8 @@
       --text: #eceef2;
       --muted: #9aa1ae;
       --line: #262a33;
-      --accent: #7b93ff;
-      --accent-soft: #1c2240;
+      --accent: #4ade80;
+      --accent-soft: #14281b;
       --card: #181b22;
       --header-bg: rgba(13,15,19,.85);
       --btn-bg: #eceef2;
@@ -157,23 +157,6 @@
       border: 1px solid var(--line); font-weight: 600; font-size: 14px; margin-bottom: 14px; background: var(--card);
     }
 
-    /* Testimonials */
-    .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .quote {
-      background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
-      padding: 28px; display: flex; flex-direction: column; gap: 20px;
-    }
-    .stars { color: #f5a524; letter-spacing: 2px; font-size: 14px; }
-    .quote blockquote { font-size: 16px; line-height: 1.6; flex: 1; }
-    .who { display: flex; align-items: center; gap: 12px; }
-    .avatar {
-      width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
-      font-weight: 600; font-size: 14px; background: var(--accent-soft); color: var(--accent);
-    }
-    .who b { display: block; font-size: 14px; }
-    .who small { color: var(--muted); font-size: 13px; }
-    .proof { display: flex; gap: 40px; flex-wrap: wrap; margin-top: 40px; color: var(--muted); font-size: 14px; }
-    .proof b { display: block; color: var(--text); font-size: 28px; letter-spacing: -.02em; }
     .step h3 { font-size: 17px; margin-bottom: 6px; }
     .step p { color: var(--muted); font-size: 15px; }
 
@@ -213,7 +196,7 @@
     footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 
     @media (max-width: 860px) {
-      .grid, .steps, .prices, .quotes { grid-template-columns: 1fr; }
+      .grid, .steps, .prices { grid-template-columns: 1fr; }
       .links { display: none; }
       .hero { padding: 64px 0 48px; }
       section { padding: 64px 0; }
@@ -234,7 +217,6 @@
       <div class="links">
         <a href="#funciones">Funciones</a>
         <a href="#como">Cómo funciona</a>
-        <a href="#testimonios">Testimonios</a>
         <a href="#precios">Precios</a>
         <a href="#faq">FAQ</a>
       </div>
@@ -252,7 +234,7 @@
     <!-- Hero -->
     <div class="hero wrap">
       <div class="pill">Nuevo · Captación de leads con IA</div>
-      <h1>Tus clientes, tu tienda y tus redes en un solo lugar.</h1>
+      <h1>Todo tu negocio en un solo lugar</h1>
       <p>Nexo es el CRM sencillo para creadores y pequeños negocios que venden online. Menos herramientas, más ventas.</p>
       <div class="cta">
         <a href="#empezar" class="btn btn-primary">Probar 14 días gratis</a>
@@ -354,49 +336,8 @@
       </div>
     </section>
 
-    <!-- Testimonials -->
-    <section id="testimonios" class="soft">
-      <div class="wrap">
-        <div class="head">
-          <div class="eyebrow">Testimonios</div>
-          <h2>Negocios como el tuyo ya venden más con Nexo.</h2>
-        </div>
-        <div class="quotes">
-          <figure class="quote">
-            <div class="stars" aria-label="5 de 5 estrellas">★★★★★</div>
-            <blockquote>“Antes tenía los contactos en una hoja de cálculo y la tienda en otra web. Ahora lo veo todo en una pantalla y mis ventas de cursos han subido un 40%.”</blockquote>
-            <figcaption class="who">
-              <div class="avatar">MG</div>
-              <div><b>Marta Gil</b><small>Creadora de cursos de fotografía</small></div>
-            </figcaption>
-          </figure>
-          <figure class="quote">
-            <div class="stars" aria-label="5 de 5 estrellas">★★★★★</div>
-            <blockquote>“Los leads de Instagram entran solos al CRM con su puntuación. Mi equipo sabe a quién llamar primero cada mañana.”</blockquote>
-            <figcaption class="who">
-              <div class="avatar">JR</div>
-              <div><b>Javier Romero</b><small>Fundador de una agencia de marketing</small></div>
-            </figcaption>
-          </figure>
-          <figure class="quote">
-            <div class="stars" aria-label="5 de 5 estrellas">★★★★★</div>
-            <blockquote>“Vendo plantillas y ebooks sin preocuparme de nada: el pago, la entrega y el email de seguimiento son automáticos. Sencillísimo.”</blockquote>
-            <figcaption class="who">
-              <div class="avatar">LP</div>
-              <div><b>Laura Pérez</b><small>Diseñadora y creadora digital</small></div>
-            </figcaption>
-          </figure>
-        </div>
-        <div class="proof">
-          <div><b>+2.500</b>negocios activos</div>
-          <div><b>4,9/5</b>valoración media</div>
-          <div><b>+1,2 M€</b>vendidos en productos digitales</div>
-        </div>
-      </div>
-    </section>
-
     <!-- Pricing -->
-    <section id="precios">
+    <section id="precios" class="soft">
       <div class="wrap">
         <div class="head">
           <div class="eyebrow">Precios</div>
@@ -444,7 +385,7 @@
     </section>
 
     <!-- FAQ -->
-    <section id="faq" class="soft">
+    <section id="faq">
       <div class="wrap faq">
         <div class="head">
           <div class="eyebrow">Preguntas frecuentes</div>
@@ -470,7 +411,7 @@
     </section>
 
     <!-- Final CTA -->
-    <section id="empezar" class="final">
+    <section id="empezar" class="final soft">
       <div class="wrap">
         <h2>Empieza a vender más hoy.</h2>
         <p style="color:var(--muted)">Crea tu cuenta gratis y conecta tu primera red en 5 minutos.</p>
