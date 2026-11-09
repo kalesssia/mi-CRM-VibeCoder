@@ -110,7 +110,8 @@
       background: var(--bg-soft); padding: 16px; text-align: left;
     }
     .mock-inner { background: var(--card); border-radius: 12px; border: 1px solid var(--line); padding: 20px; }
-    .mock-top { display: flex; gap: 6px; margin-bottom: 18px; }
+    .mock-top { display: flex; align-items: center; gap: 6px; margin-bottom: 18px; }
+    .demo-label { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--muted); border: 1px dashed var(--line); padding: 2px 10px; border-radius: 999px; }
     .mock-top i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
     .stat { border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
@@ -242,9 +243,9 @@
       </div>
       <div class="note">Sin tarjeta de crédito · Configuración en 5 minutos</div>
 
-      <div class="mock" aria-hidden="true">
+      <div class="mock" role="img" aria-label="Ejemplo ilustrativo del panel de Nexo con datos ficticios">
         <div class="mock-inner">
-          <div class="mock-top"><i></i><i></i><i></i></div>
+          <div class="mock-top" aria-hidden="true"><i></i><i></i><i></i><span class="demo-label">Demostración · datos de ejemplo</span></div>
           <div class="stats">
             <div class="stat"><small>Clientes activos</small><b>1.284</b><em>+12% este mes</em></div>
             <div class="stat"><small>Ventas digitales</small><b>8.420 €</b><em>+24% este mes</em></div>
