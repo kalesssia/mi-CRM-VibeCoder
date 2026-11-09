@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nexo CRM</title>
+  <meta name="description" content="Nexo CRM: gestiona clientes, vende productos digitales y capta leads desde redes sociales en un solo lugar.">
+  <script>
+    // Aplica el tema antes de pintar la página para evitar parpadeos
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('nexo-theme'); } catch (e) {}
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-soft: #f6f7f9;
+      --text: #0f1115;
+      --muted: #5b6270;
+      --line: #e6e8ec;
+      --accent: #3b5bfd;
+      --accent-soft: #eef1ff;
+      --radius: 16px;
+      --card: #ffffff;
+      --header-bg: rgba(255,255,255,.85);
+      --btn-bg: #0f1115;
+      --btn-text: #ffffff;
+      --shadow: rgba(15,17,21,.07);
+      color-scheme: light;
+    }
+    :root[data-theme="dark"] {
+      --bg: #0d0f13;
+      --bg-soft: #14171d;
+      --text: #eceef2;
+      --muted: #9aa1ae;
+      --line: #262a33;
+      --accent: #7b93ff;
+      --accent-soft: #1c2240;
+      --card: #181b22;
+      --header-bg: rgba(13,15,19,.85);
+      --btn-bg: #eceef2;
+      --btn-text: #0d0f13;
+      --shadow: rgba(0,0,0,.4);
+      color-scheme: dark;
+    }
+    body, header, .card, .price, .mock, .mock-inner, .stat, input { transition: background-color .25s, border-color .25s, color .25s; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+    /* Nav */
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .logo { font-weight: 700; font-size: 18px; letter-spacing: -.02em; display: flex; align-items: center; gap: 8px; }
+    .logo span { width: 22px; height: 22px; border-radius: 7px; background: var(--accent); display: inline-block; }
+    .links { display: flex; gap: 28px; font-size: 14px; color: var(--muted); }
+    .links a:hover { color: var(--text); }
+
+    .btn {
+      display: inline-block; padding: 10px 18px; border-radius: 999px;
+      font-size: 14px; font-weight: 600; transition: transform .15s, background .15s;
+    }
+    .btn-primary { background: var(--btn-bg); color: var(--btn-text); }
+    .btn-primary:hover { transform: translateY(-1px); opacity: .88; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line);
+      background: transparent; color: var(--text); cursor: pointer; display: grid; place-items: center;
+    }
+    .theme-toggle:hover { background: var(--bg-soft); }
+    .theme-toggle .sun { display: none; }
+    :root[data-theme="dark"] .theme-toggle .sun { display: block; }
+    :root[data-theme="dark"] .theme-toggle .moon { display: none; }
+    .btn-ghost { border: 1px solid var(--line); }
+    .btn-ghost:hover { background: var(--bg-soft); }
+
+    /* Hero */
+    .hero { padding: 96px 0 72px; text-align: center; }
+    .pill {
+      display: inline-block; font-size: 13px; color: var(--accent);
+      background: var(--accent-soft); padding: 6px 14px; border-radius: 999px; margin-bottom: 24px; font-weight: 500;
+    }
+    h1 { font-size: clamp(36px, 6vw, 60px); line-height: 1.08; letter-spacing: -.035em; font-weight: 700; max-width: 780px; margin: 0 auto; }
+    .hero p { font-size: 18px; color: var(--muted); max-width: 560px; margin: 20px auto 32px; }
+    .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .note { font-size: 13px; color: var(--muted); margin-top: 16px; }
+
+    /* Mockup */
+    .mock {
+      margin: 64px auto 0; max-width: 900px; border: 1px solid var(--line); border-radius: 20px;
+      background: var(--bg-soft); padding: 16px; text-align: left;
+    }
+    .mock-inner { background: var(--card); border-radius: 12px; border: 1px solid var(--line); padding: 20px; }
+    .mock-top { display: flex; gap: 6px; margin-bottom: 18px; }
+    .mock-top i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    .stat { border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+    .stat small { color: var(--muted); font-size: 12px; }
+    .stat b { display: block; font-size: 22px; letter-spacing: -.02em; }
+    .stat em { font-style: normal; font-size: 12px; color: #12a150; }
+    .rows .row {
+      display: grid; grid-template-columns: 1.4fr 1fr .8fr; gap: 12px; align-items: center;
+      padding: 10px 0; border-top: 1px solid var(--line); font-size: 14px;
+    }
+    .rows .row:first-child { border-top: 0; color: var(--muted); font-size: 12px; }
+    .tag { font-size: 12px; padding: 3px 10px; border-radius: 999px; background: var(--bg-soft); justify-self: start; }
+    .tag.new { background: var(--accent-soft); color: var(--accent); }
+
+    /* Sections */
+    section { padding: 88px 0; }
+    .soft { background: var(--bg-soft); }
+    .head { max-width: 620px; margin-bottom: 48px; }
+    .eyebrow { font-size: 13px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; }
+    h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -.03em; line-height: 1.15; margin: 10px 0 12px; }
+    .head p { color: var(--muted); font-size: 17px; }
+
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px;
+      transition: transform .2s, box-shadow .2s, background-color .25s, border-color .25s;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px var(--shadow); }
+    .icon {
+      width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); color: var(--accent);
+      display: grid; place-items: center; margin-bottom: 18px;
+    }
+    .card h3 { font-size: 18px; letter-spacing: -.01em; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 15px; margin-bottom: 14px; }
+    .card ul { list-style: none; font-size: 14px; }
+    .card li { padding: 4px 0 4px 22px; position: relative; }
+    .card li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+    /* Steps */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; counter-reset: s; }
+    .step { counter-increment: s; }
+    .step::before {
+      content: counter(s); display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid var(--line); font-weight: 600; font-size: 14px; margin-bottom: 14px; background: var(--card);
+    }
+
+    /* Testimonials */
+    .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .quote {
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 28px; display: flex; flex-direction: column; gap: 20px;
+    }
+    .stars { color: #f5a524; letter-spacing: 2px; font-size: 14px; }
+    .quote blockquote { font-size: 16px; line-height: 1.6; flex: 1; }
+    .who { display: flex; align-items: center; gap: 12px; }
+    .avatar {
+      width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+      font-weight: 600; font-size: 14px; background: var(--accent-soft); color: var(--accent);
+    }
+    .who b { display: block; font-size: 14px; }
+    .who small { color: var(--muted); font-size: 13px; }
+    .proof { display: flex; gap: 40px; flex-wrap: wrap; margin-top: 40px; color: var(--muted); font-size: 14px; }
+    .proof b { display: block; color: var(--text); font-size: 28px; letter-spacing: -.02em; }
+    .step h3 { font-size: 17px; margin-bottom: 6px; }
+    .step p { color: var(--muted); font-size: 15px; }
+
+    /* Pricing */
+    .prices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .price { border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; background: var(--card); display: flex; flex-direction: column; }
+    .price.featured { border-color: var(--text); box-shadow: 0 12px 30px var(--shadow); }
+    .price h3 { font-size: 16px; }
+    .amount { font-size: 40px; font-weight: 700; letter-spacing: -.03em; margin: 8px 0 4px; }
+    .amount small { font-size: 15px; color: var(--muted); font-weight: 500; }
+    .price > p { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+    .price ul { list-style: none; font-size: 14px; margin-bottom: 24px; flex: 1; }
+    .price li { padding: 5px 0; border-top: 1px solid var(--line); }
+    .price .btn { text-align: center; }
+
+    /* FAQ */
+    details { border-top: 1px solid var(--line); padding: 18px 0; }
+    details:last-child { border-bottom: 1px solid var(--line); }
+    summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; }
+    summary::after { content: "+"; color: var(--muted); font-weight: 400; font-size: 20px; line-height: 1; }
+    details[open] summary::after { content: "–"; }
+    details p { color: var(--muted); margin-top: 10px; font-size: 15px; }
+    .faq { max-width: 720px; }
+
+    /* Final CTA */
+    .final { text-align: center; }
+    .final form { display: flex; gap: 10px; max-width: 440px; margin: 28px auto 0; flex-wrap: wrap; justify-content: center; }
+    .final input {
+      flex: 1; min-width: 220px; padding: 12px 16px; border-radius: 999px; border: 1px solid var(--line);
+      font: inherit; font-size: 14px; outline: none; background: var(--card); color: var(--text);
+    }
+    .final input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .final button { border: 0; cursor: pointer; font-family: inherit; }
+    #msg { font-size: 14px; color: #12a150; margin-top: 12px; min-height: 22px; }
+
+    footer { border-top: 1px solid var(--line); padding: 32px 0; font-size: 13px; color: var(--muted); }
+    footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+    @media (max-width: 860px) {
+      .grid, .steps, .prices, .quotes { grid-template-columns: 1fr; }
+      .links { display: none; }
+      .hero { padding: 64px 0 48px; }
+      section { padding: 64px 0; }
+    }
+    @media (max-width: 520px) {
+      .wrap { padding: 0 16px; }
+      .stats { grid-template-columns: 1fr; }
+      .rows .row { grid-template-columns: 1.4fr 1fr; }
+      .rows .row > :nth-child(2) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav class="wrap">
+      <a href="#" class="logo"><span></span>Nexo</a>
+      <div class="links">
+        <a href="#funciones">Funciones</a>
+        <a href="#como">Cómo funciona</a>
+        <a href="#testimonios">Testimonios</a>
+        <a href="#precios">Precios</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="nav-right">
+        <button class="theme-toggle" id="themeToggle" aria-label="Cambiar entre modo claro y oscuro" title="Modo claro / oscuro">
+          <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+        <a href="#empezar" class="btn btn-primary">Empezar gratis</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <div class="hero wrap">
+      <div class="pill">Nuevo · Captación de leads con IA</div>
+      <h1>Tus clientes, tu tienda y tus redes en un solo lugar.</h1>
+      <p>Nexo es el CRM sencillo para creadores y pequeños negocios que venden online. Menos herramientas, más ventas.</p>
+      <div class="cta">
+        <a href="#empezar" class="btn btn-primary">Probar 14 días gratis</a>
+        <a href="#funciones" class="btn btn-ghost">Ver funciones</a>
+      </div>
+      <div class="note">Sin tarjeta de crédito · Configuración en 5 minutos</div>
+
+      <div class="mock" aria-hidden="true">
+        <div class="mock-inner">
+          <div class="mock-top"><i></i><i></i><i></i></div>
+          <div class="stats">
+            <div class="stat"><small>Clientes activos</small><b>1.284</b><em>+12% este mes</em></div>
+            <div class="stat"><small>Ventas digitales</small><b>8.420 €</b><em>+24% este mes</em></div>
+            <div class="stat"><small>Leads de redes</small><b>356</b><em>+31% este mes</em></div>
+          </div>
+          <div class="rows">
+            <div class="row"><span>Contacto</span><span>Origen</span><span>Estado</span></div>
+            <div class="row"><span>Lucía Martín</span><span>Instagram</span><span class="tag new">Nuevo lead</span></div>
+            <div class="row"><span>Carlos Ruiz</span><span>Tienda</span><span class="tag">Cliente</span></div>
+            <div class="row"><span>Ana Torres</span><span>LinkedIn</span><span class="tag new">Nuevo lead</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <section id="funciones" class="soft">
+      <div class="wrap">
+        <div class="head">
+          <div class="eyebrow">Funciones</div>
+          <h2>Todo lo que necesitas para crecer, nada que sobre.</h2>
+          <p>Tres módulos conectados entre sí: cada lead, cada venta y cada conversación quedan en la ficha del cliente.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <h3>Gestión de clientes</h3>
+            <p>Una ficha completa de cada persona, con todo su historial a la vista.</p>
+            <ul>
+              <li>Contactos, etiquetas y segmentos</li>
+              <li>Pipeline visual de ventas</li>
+              <li>Notas, tareas y recordatorios</li>
+              <li>Historial de compras y mensajes</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+            </div>
+            <h3>Venta de productos digitales</h3>
+            <p>Vende cursos, ebooks, plantillas o suscripciones sin otra plataforma.</p>
+            <ul>
+              <li>Tienda y checkout en 1 clic</li>
+              <li>Entrega automática de archivos</li>
+              <li>Cupones, packs y suscripciones</li>
+              <li>Pagos con tarjeta, Bizum y PayPal</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <h3>Leads desde redes sociales</h3>
+            <p>Convierte seguidores en contactos y llévalos directo al CRM.</p>
+            <ul>
+              <li>Instagram, TikTok, LinkedIn y Facebook</li>
+              <li>Formularios y link-in-bio</li>
+              <li>Respuestas automáticas a DMs</li>
+              <li>Puntuación de leads con IA</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How -->
+    <section id="como">
+      <div class="wrap">
+        <div class="head">
+          <div class="eyebrow">Cómo funciona</div>
+          <h2>Del primer like a la venta, en tres pasos.</h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <h3>Conecta tus redes</h3>
+            <p>Vincula tus cuentas y publica tu formulario o link-in-bio en minutos.</p>
+          </div>
+          <div class="step">
+            <h3>Captura y organiza</h3>
+            <p>Cada lead entra al CRM con su origen, intereses y una puntuación automática.</p>
+          </div>
+          <div class="step">
+            <h3>Vende y fideliza</h3>
+            <p>Ofrece tus productos digitales y haz seguimiento sin salir de Nexo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonios" class="soft">
+      <div class="wrap">
+        <div class="head">
+          <div class="eyebrow">Testimonios</div>
+          <h2>Negocios como el tuyo ya venden más con Nexo.</h2>
+        </div>
+        <div class="quotes">
+          <figure class="quote">
+            <div class="stars" aria-label="5 de 5 estrellas">★★★★★</div>
+            <blockquote>“Antes tenía los contactos en una hoja de cálculo y la tienda en otra web. Ahora lo veo todo en una pantalla y mis ventas de cursos han subido un 40%.”</blockquote>
+            <figcaption class="who">
+              <div class="avatar">MG</div>
+              <div><b>Marta Gil</b><small>Creadora de cursos de fotografía</small></div>
+            </figcaption>
+          </figure>
+          <figure class="quote">
+            <div class="stars" aria-label="5 de 5 estrellas">★★★★★</div>
+            <blockquote>“Los leads de Instagram entran solos al CRM con su puntuación. Mi equipo sabe a quién llamar primero cada mañana.”</blockquote>
+            <figcaption class="who">
+              <div class="avatar">JR</div>
+              <div><b>Javier Romero</b><small>Fundador de una agencia de marketing</small></div>
+            </figcaption>
+          </figure>
+          <figure class="quote">
+            <div class="stars" aria-label="5 de 5 estrellas">★★★★★</div>
+            <blockquote>“Vendo plantillas y ebooks sin preocuparme de nada: el pago, la entrega y el email de seguimiento son automáticos. Sencillísimo.”</blockquote>
+            <figcaption class="who">
+              <div class="avatar">LP</div>
+              <div><b>Laura Pérez</b><small>Diseñadora y creadora digital</small></div>
+            </figcaption>
+          </figure>
+        </div>
+        <div class="proof">
+          <div><b>+2.500</b>negocios activos</div>
+          <div><b>4,9/5</b>valoración media</div>
+          <div><b>+1,2 M€</b>vendidos en productos digitales</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="precios">
+      <div class="wrap">
+        <div class="head">
+          <div class="eyebrow">Precios</div>
+          <h2>Planes simples. Sin sorpresas.</h2>
+          <p>Cambia o cancela cuando quieras.</p>
+        </div>
+        <div class="prices">
+          <div class="price">
+            <h3>Starter</h3>
+            <div class="amount">0 € <small>/mes</small></div>
+            <p>Para empezar a ordenar tus contactos.</p>
+            <ul>
+              <li>Hasta 250 contactos</li>
+              <li>1 red social conectada</li>
+              <li>3 productos digitales · 5% comisión</li>
+            </ul>
+            <a href="#empezar" class="btn btn-ghost">Empezar gratis</a>
+          </div>
+          <div class="price featured">
+            <h3>Pro</h3>
+            <div class="amount">29 € <small>/mes</small></div>
+            <p>Para negocios que ya venden online.</p>
+            <ul>
+              <li>Contactos ilimitados</li>
+              <li>Todas las redes sociales</li>
+              <li>Productos ilimitados · 0% comisión</li>
+              <li>Automatizaciones y IA</li>
+            </ul>
+            <a href="#empezar" class="btn btn-primary">Probar 14 días gratis</a>
+          </div>
+          <div class="price">
+            <h3>Equipo</h3>
+            <div class="amount">79 € <small>/mes</small></div>
+            <p>Para equipos de ventas y agencias.</p>
+            <ul>
+              <li>Todo lo de Pro</li>
+              <li>Hasta 10 usuarios</li>
+              <li>Roles, permisos y API</li>
+              <li>Soporte prioritario</li>
+            </ul>
+            <a href="#empezar" class="btn btn-ghost">Hablar con ventas</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="soft">
+      <div class="wrap faq">
+        <div class="head">
+          <div class="eyebrow">Preguntas frecuentes</div>
+          <h2>¿Dudas?</h2>
+        </div>
+        <details>
+          <summary>¿Puedo importar mis contactos actuales?</summary>
+          <p>Sí. Importa desde CSV, Excel o directamente desde otras herramientas en un par de clics.</p>
+        </details>
+        <details>
+          <summary>¿Qué productos digitales puedo vender?</summary>
+          <p>Cursos, ebooks, plantillas, presets, membresías, sesiones y cualquier archivo descargable.</p>
+        </details>
+        <details>
+          <summary>¿Cumple con el RGPD?</summary>
+          <p>Sí. Los datos se alojan en la UE y cada formulario incluye consentimiento y doble opt-in.</p>
+        </details>
+        <details>
+          <summary>¿Necesito conocimientos técnicos?</summary>
+          <p>No. Todo se configura desde el navegador, sin código.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section id="empezar" class="final">
+      <div class="wrap">
+        <h2>Empieza a vender más hoy.</h2>
+        <p style="color:var(--muted)">Crea tu cuenta gratis y conecta tu primera red en 5 minutos.</p>
+        <form id="signup">
+          <input type="email" id="email" placeholder="tu@email.com" required aria-label="Email">
+          <button type="submit" class="btn btn-primary">Crear cuenta</button>
+        </form>
+        <div id="msg" role="status"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 Nexo CRM</span>
+      <span>Privacidad · Términos · Contacto</span>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', function () {
+      var root = document.documentElement;
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('nexo-theme', next); } catch (e) {}
+    });
+
+    document.getElementById('signup').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = document.getElementById('email');
+      document.getElementById('msg').textContent = '¡Listo! Te hemos enviado un enlace a ' + email.value;
+      email.value = '';
+    });
+  </script>
+</body>
+</html>
